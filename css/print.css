@@ -1,0 +1,61 @@
+body {
+    background: #fff;
+    font-family: arial, helvetica, sans-serif;
+    font-size: 12pt;
+}
+@page {
+	size: A4 landscape;
+}
+a {
+	font-weight:bold;
+	text-decoration:none;
+}
+.menu {
+	display:none;
+}
+.bal {
+	display:none;
+}
+
+h1 {
+	font-size: 16pt;
+}
+h2 {
+	font-size: 14pt;
+}
+.normal {
+	border: 1px solid #aaa;
+	width:100%;
+}
+.normal-head {
+	background:#555;
+	color:#000;
+	font-weight: bold;
+    font-size: 16pt;
+	padding: 0.2cm 0.3cm;
+	border-bottom: 1px solid #000;
+	border-right: 1px solid #000;
+	text-align: center;
+}
+.row0 {
+	 background: #fff;
+	 font-weight: normal;
+    font-size: 14pt;
+}
+.cell0 {
+	padding: 0.1cm 0.2cm;
+	border-bottom:1px #000 solid;
+	border-right:1px #aaa solid;
+	text-align: left;
+}
+.row1 {
+	 background: #ccc;
+	 font-weight: normal;
+    font-size: 14pt;
+}
+.cell1 {
+	padding: 0.1cm 0.2cm;
+	border-bottom:1px #000 solid;
+	border-right:1px #aaa solid;
+	text-align: left;
+}
