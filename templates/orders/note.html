@@ -1,0 +1,26 @@
+{% extends "orders/base.html" %}
+
+{% block content %}
+  <h3>Note for order {{ order_id }}</h3>
+  <div class="form-group">
+    <form method="post" class="my-5">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <input type="hidden" name="order" id="id_order" value="{{ order_id }}" >
+      {% for field in form.visible_fields %}
+        <div class="row mb-3">
+          {{ field.errors }}
+          <label for="{{ field.id_for_label }}" class="col-2 col-form-label fw-bold">{{ field.label }}</label>
+          <div class="col-auto">
+            {{ field }}
+          </div>
+        </div>
+      {% endfor %}
+     
+      <div class="col-auto mt-5">
+        <button type="submit" class="btn btn-success">Save</button>
+        <a href="{% url 'orders:order' order_id %}" class="ms-3 btn btn-danger">Cancel</a>
+       </div>
+    </form>
+  </div>
+{% endblock %}

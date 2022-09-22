@@ -1,0 +1,33 @@
+{% extends "orders/base.html" %}
+
+{% block content %}
+    <h3>Suppliers</h3>
+    <a href="{% url 'orders:supplier-new' %}" class="btn btn-sm btn-outline-primary">New Supplier</a>
+    {% if suppliers %}
+    <table class="table table-sm table-bordered table-striped w-auto my-3">
+      <thead class="table-secondary border-dark">
+        <th class="ps-2 pe-5">Supplier Name</th>
+        <th class="ps-2 pe-5">Brands</th>
+      </thead>
+      <tbody>
+    {% for supplier in suppliers %}
+      <tr>
+        <td class="d-flex justify-content-between px-2">
+          <a href="{% url 'orders:supplier-update' supplier.id%}" class="text-decoration-none">{{ supplier.name }}</a>
+          {% if not supplier.get_brands %}
+          <a href="#" class="text-decoration-none text-danger ms-5" data-bs-toggle="modal" data-bs-target="#deleteSupplier{{ supplier.id }}">Delete</a>
+          {% endif %}
+        </td>
+        <td class="ps-2 pe-5">{{ supplier.get_brands|join:", " }}</td>
+      </tr>
+      {% with supplierId=supplier.id|stringformat:"i"  %}
+        {% include "orders/delete_modal.html" with modalId="deleteSupplier"|add:supplierId itemToDelete=supplier.name deleteUrl="orders:supplier-delete" idToDelete=supplier.id %}
+      {% endwith %}
+    {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+       <p>There are no suppliers</p>
+    {% endif %}
+
+{% endblock %}

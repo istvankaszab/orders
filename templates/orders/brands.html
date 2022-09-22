@@ -1,0 +1,54 @@
+{% extends "orders/base.html" %}
+
+{% block content %}
+    <h3>Brands</h3>
+    <a href="{% url 'orders:brand-new' %}" class="btn btn-sm btn-outline-primary">New Brand</a>
+    {% if brands %}
+    <table class="table table-sm table-bordered table-striped w-auto my-3">
+      <thead class="table-secondary border-dark">
+        <th class="ps-2 pe-5">Name</th>
+        <th class="ps-2 pe-5">Supplier</th>
+      </thead>
+      <tbody>
+    {% for brand in brands %}
+        <tr>
+          <td class="ps-2 pe-5"><a href="{% url 'orders:brand-update' brand.id %}" class="text-decoration-none">{{ brand.name }}</a></td>
+          <td class="ps-2 pe-5">{{ brand.supplier.name }}</td>
+        </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+            <span aria-hidden="true">&lt;</span>
+          </a>
+        </li>
+        {% endif %}
+
+        {% for page_number in page_obj.paginator.get_elided_page_range %}
+          {% if page_number == page_obj.paginator.ELLIPSIS %}
+              {{page_number}}
+          {% else %}
+            <li class="page-item{% if page_obj.number == page_number %} active{% endif %}"><a class="page-link" href="?page={{ page_number }}">{{page_number}}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&gt;</span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+
+    {% else %}
+        <p>There are no brands</p>
+    {% endif %}
+
+{% endblock %}

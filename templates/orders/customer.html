@@ -1,0 +1,30 @@
+{% extends "orders/base.html" %}
+
+{% block content %}
+  <h2>Customer</h2>
+  <div class="form-group">
+    <form method="post" class="my-5">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form %}
+        <div class="row mb-3">
+          {{ field.errors }}
+          <label for="{{ field.id_for_label }}" class="col-2 col-form-label fw-bold">{{ field.label }}</label>
+          <div class="col-auto">
+            {{ field }}
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="col-auto mt-5">
+        <button type="submit" class="btn btn-success">Save</button>
+        {% if order_id > 0 %}
+          {% url 'orders:order' order_id as the_url %}
+        {% else %}
+          {% url 'orders:index' as the_url %}
+        {% endif %}
+        <a href="{{ the_url }}" class="ms-3 btn btn-danger">Cancel</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

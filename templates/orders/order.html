@@ -1,0 +1,162 @@
+{% extends "orders/base.html" %}
+
+{% block content %}
+  <h3>Order {{ order.id }}</h3>
+  <div class="row mb-3">
+    <div class="col-auto"><strong>Webshop: </strong>{{ order.webshop.name }}</div>
+    <div class="col-auto ml-5"><strong>Original ID: </strong>{{ order.original }}</div>
+    <div class="col-auto ml-5"><strong>Total: </strong>£ {{ order.total }}</div>
+    <div class="col-auto ml-5"><strong>Status: </strong>{{ order.get_status }}</div>
+    <div class="col-auto ml-5">
+      <a href="#" data-bs-toggle="modal" data-bs-target="#updatesModal">Status updates</a>
+    </div>
+  </div>
+
+  <div class="row mb-2">
+    <div class="col-auto p-2 m-1 me-5">
+      <div class="d-flex justify-content-between pe-1 border-bottom border-secondary mb-2">
+        <span class="fs-4">Customer</span>
+        <a href="{% url 'orders:customer-update' customer.id%}" class="btn btn-link">Edit</a>
+      </div>
+      <div class="pe-3">
+        <table class="table table-borderless table-sm">
+          <tbody>
+            <tr>
+              <td class="fw-bold">Name</td>
+              <td>{{ customer.name }}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Email</td>
+              <td>{{ customer.email }}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Phone</td>
+              <td>{{ customer.phone }}</td>
+            </tr>
+            <tr>
+              <td class="fw-bold">Address</td>
+              <td>{{ customer.address }}<br />{{ customer.city }}<br />{{ customer.postcode }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-auto p-2 m-1">
+      <div class="d-flex justify-content-between pe-1 border-bottom border-secondary mb-2">
+        <span class="fs-4">Ordered items</span>
+        <a href="{% url 'orders:orderitem-create' order_id=order.id %}" class="btn btn-link">Add item</a>
+      </div>
+      <div class="pe-3">
+        <table class="table table-borderless table-sm">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td>{{ item.brand.name }} {{ item.name }}</td>
+              <td>£ {{ item.price }}</td>
+              <td class="text-center">{{ item.quantity }}</td>
+              <td class="{{ item.status.style_class}}">{{ item.status.name }}</td>
+              <td>
+                <a href="{% url 'orders:orderitem-update' item.id %}">Edit</a>
+                <a href="#" class="text-danger ms-3" data-bs-toggle="modal" data-bs-target="#deleteItem{{ item.id }}">Delete</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>  
+  </div>
+  
+  <div class="row">
+    <div class="col-auto p-2 m-1 me-5">
+      <div class="d-flex justify-content-between pe-1 border-bottom border-secondary mb-2">
+        <span class="fs-4">Notes</span>
+        <a href="{% url 'orders:note-create' order_id=order.id %}" class="btn btn-link">Add note</a>
+      </div>
+      <div class="pe-3">
+        <table class="table table-borderless table-sm">
+          <thead>
+            <tr>
+              <th>Note</th>
+              <th>For courier</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if notes %}
+              {% for note in notes %}
+                <tr>
+                  <td>{{ note.text }}</td>
+                  <td class="text-center">{% if note.courier %}<i class="bi bi-check-square"></i>{% endif %}</td>
+                  <td>
+                    <a href="{% url 'orders:note-update' note.id %}">Edit</a>
+                    <a href="#" class="text-danger ms-3" data-bs-toggle="modal" data-bs-target="#deleteNote{{ note.id }}">Delete</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+    {% for item in items %}
+      {% with itemId=item.id|stringformat:"i"  %}
+        {% include "orders/delete_modal.html" with modalId="deleteItem"|add:itemId itemToDelete=item.brand.name|add:" "|add:item.name deleteUrl="orders:orderitem-delete" idToDelete=item.id %}
+      {% endwith %}
+    {% endfor %}
+
+    {% for note in notes %}
+      {% with noteId=note.id|stringformat:"i"  %}
+        {% include "orders/delete_modal.html" with modalId="deleteNote"|add:noteId itemToDelete=note.text deleteUrl="orders:note-delete" idToDelete=note.id %}
+      {% endwith %}
+    {% endfor %}
+
+    <div class="modal fade" id="updatesModal" tabindex="-1" aria-labelledby="updatesModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updatesModalLabel">Status updates</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-borderless table-sm">
+              <thead class="table-secondary">
+                <tr>
+                  <th>Date - time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for update in updates %}
+                <tr>
+                  <td class="pe-5">{{ update.time|date:"d/m/Y - H:i" }}</td>
+                  <td>{{ update.status }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+ 
+  
+  {% endblock %}
